@@ -7,6 +7,13 @@
       {{ article.author.username }}
     </a>
     <span class="date">{{ article.createdAt | date : 'longDate' }}</span>
+    <div *ngIf="article.coAuthors && article.coAuthors.length > 0" class="co-authors">
+      <span class="co-authors-label">Co-Authors: </span>
+      <span *ngFor="let coAuthor of article.coAuthors; let last = last">
+        <a [routerLink]="['/profile', coAuthor.username]">{{ coAuthor.username }}</a>
+        <span *ngIf="!last">, </span>
+      </span>
+    </div>
   </div>
 
   <span [hidden]="!canModify">

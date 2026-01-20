@@ -29,6 +29,7 @@ export const articleInitialState: ArticleState = {
       following: false,
       loading: false,
     },
+    coAuthors: [],
   },
   comments: [],
   loaded: false,

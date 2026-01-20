@@ -47,15 +47,15 @@ export class ArticleComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.dispatch(formsActions.setStructure({ structure }));
     this.store.dispatch(formsActions.setData({ data: '' }));
-    this.store
-      .select(selectAuthState)
-      .pipe(
-        filter((auth) => auth.loggedIn),
-        (auth$) => combineLatest([auth$, this.store.select(articleQuery.getAuthorUsername)]),
-        untilDestroyed(this),
-      )
-      .subscribe(([auth, username]) => {
-        this.canModify = auth.user.username === username;
+    combineLatest([
+      this.store.select(selectAuthState).pipe(filter((auth) => auth.loggedIn)),
+      this.store.select(articleQuery.selectData),
+    ])
+      .pipe(untilDestroyed(this))
+      .subscribe(([auth, article]) => {
+        const isAuthor = auth.user.username === article.author.username;
+        const isCoAuthor = article.coAuthors?.some((coAuthor) => coAuthor.username === auth.user.username) || false;
+        this.canModify = isAuthor || isCoAuthor;
       });
   }
 

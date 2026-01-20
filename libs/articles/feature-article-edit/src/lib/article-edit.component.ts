@@ -31,6 +31,12 @@ const structure: Field[] = [
     placeholder: 'Enter Tags',
     validator: [],
   },
+  {
+    type: 'INPUT',
+    name: 'coAuthors',
+    placeholder: 'Co-Authors (comma-separated email addresses)',
+    validator: [],
+  },
 ];
 
 @UntilDestroy()
