@@ -91,7 +91,7 @@ export class ArticleService {
     const user = userId
       ? await this.userRepository.findOneOrFail(userId, { populate: ['followers', 'favorites'] })
       : undefined;
-    const article = await this.articleRepository.findOne(where, { populate: ['author'] });
+    const article = await this.articleRepository.findOne(where, { populate: ['author', 'coAuthors'] });
     return { article: article && article.toJSON(user) } as IArticleRO;
   }
 
@@ -155,6 +155,17 @@ export class ArticleService {
     );
     const article = new Article(user!, dto.title, dto.description, dto.body);
     article.tagList.push(...dto.tagList);
+    
+    // Handle co-authors
+    if (dto.coAuthors && dto.coAuthors.length > 0) {
+      for (const email of dto.coAuthors) {
+        const coAuthor = await this.userRepository.findOne({ email: email.trim() });
+        if (coAuthor) {
+          article.coAuthors.add(coAuthor);
+        }
+      }
+    }
+    
     user?.articles.add(article);
     await this.em.flush();
 
@@ -166,7 +177,26 @@ export class ArticleService {
       { id: userId },
       { populate: ['followers', 'favorites', 'articles'] },
     );
-    const article = await this.articleRepository.findOne({ slug }, { populate: ['author'] });
+    const article = await this.articleRepository.findOne({ slug }, { populate: ['author', 'coAuthors'] });
+    
+    // Check if user is author or co-author
+    const isCoAuthor = article?.coAuthors.getItems().some((ca) => ca.id === userId);
+    if (article && (article.author.id !== userId && !isCoAuthor)) {
+      throw new Error('Unauthorized to edit this article');
+    }
+    
+    // Handle co-authors update
+    if (articleData.coAuthors) {
+      article!.coAuthors.removeAll();
+      for (const email of articleData.coAuthors) {
+        const coAuthor = await this.userRepository.findOne({ email: email.trim() });
+        if (coAuthor) {
+          article!.coAuthors.add(coAuthor);
+        }
+      }
+      delete articleData.coAuthors;
+    }
+    
     wrap(article).assign(articleData);
     await this.em.flush();
 
