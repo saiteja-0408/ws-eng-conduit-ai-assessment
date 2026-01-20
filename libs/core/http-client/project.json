@@ -1,0 +1,16 @@
+{
+  "name": "core-http-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/core/http-client/src",
+  "prefix": "cdt",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/core/http-client/src/**/*.ts", "libs/core/http-client/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

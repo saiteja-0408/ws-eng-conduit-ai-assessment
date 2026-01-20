@@ -1,0 +1,17 @@
+{
+  "name": "roster",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/roster/src",
+  "prefix": "conduit",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/roster/**/*.ts", "libs/roster/**/*.html"]
+      }
+    }
+  }
+}

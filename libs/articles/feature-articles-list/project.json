@@ -1,0 +1,19 @@
+{
+  "name": "articles-feature-articles-list",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/articles/feature-articles-list/src",
+  "prefix": "cdt",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/articles/feature-articles-list/src/**/*.ts",
+          "libs/articles/feature-articles-list/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

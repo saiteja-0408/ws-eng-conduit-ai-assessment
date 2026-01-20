@@ -1,0 +1,16 @@
+{
+  "name": "core-error-handler",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/core/error-handler/src",
+  "prefix": "cdt",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/core/error-handler/src/**/*.ts", "libs/core/error-handler/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

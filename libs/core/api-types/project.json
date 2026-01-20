@@ -1,0 +1,16 @@
+{
+  "name": "core-api-types",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/core/api-types/src",
+  "prefix": "cdt",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/core/api-types/src/**/*.ts", "libs/core/api-types/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}
