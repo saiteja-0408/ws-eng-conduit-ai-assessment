@@ -6,61 +6,77 @@ This document summarizes the security vulnerabilities discovered during the co-a
 
 ## Vulnerabilities Found
 
-### ❌ False Positives (Not Applicable)
+### ⚠️ Angular Framework Vulnerabilities (Pre-Existing, Cannot Fix)
 
-**Angular Packages (@angular/common, @angular/compiler, @angular/core)**
-- Current Version: **16.1.9**
-- Reported Affected Versions: 19.x, 20.x, 21.x
-- **Status**: FALSE POSITIVE - Current version is NOT affected
-- **Action**: None required - vulnerability scanner misconfiguration
+**Current Angular Version: 16.1.9**
 
-The Angular vulnerabilities reported (XSRF token leakage, XSS via SVG) affect versions 19+, 20+, and 21+. Since this project uses Angular 16.1.9, these vulnerabilities do not apply.
+#### Potentially Applicable Vulnerabilities:
 
-### ⚠️ Pre-Existing Vulnerabilities (Not Introduced by Co-Authors Feature)
+**@angular/common:**
+- XSRF Token Leakage via Protocol-Relative URLs
+  - Affected: < 19.2.16 (includes 16.1.9)
+  - Patched: 19.2.16
+  - **Status**: Cannot fix - requires major version upgrade
 
-#### 1. axios (1.6.7)
+**@angular/compiler & @angular/core:**
+- XSS Vulnerability via Unsanitized SVG Script Attributes
+  - Affected: <= 18.2.14 (may include 16.1.9)
+  - Multiple variants affecting different version ranges
+  - Some list "Patched version: not available" for older versions
+  
+- Stored XSS via SVG Animation, SVG URL and MathML Attributes
+  - Affected: Multiple version ranges
+  - Patched in 19.x, 20.x, 21.x lines
+
+#### Why These Cannot Be Fixed:
+
+1. **Angular 16 is EOL**: No security patches released for 16.x line
+2. **Major Upgrade Required**: Would need Angular 16 → 19+ (3 major versions)
+3. **Out of Scope**: Instructions specify "minimal changes" and "fix vulnerabilities related to your changes"
+4. **Pre-Existing**: These vulnerabilities existed before co-authors feature
+5. **Breaking Changes**: Major Angular upgrades require extensive refactoring
+
+#### Risk Assessment:
+
+**XSRF Token Leakage:**
+- **Impact**: Moderate - Could leak XSRF tokens via protocol-relative URLs
+- **Likelihood**: Low - Requires specific URL patterns
+- **Mitigation**: Avoid using protocol-relative URLs in API calls
+
+**XSS Vulnerabilities:**
+- **Impact**: High - Could allow XSS attacks via SVG/MathML
+- **Likelihood**: Low - Requires untrusted SVG/MathML content
+- **Mitigation**: 
+  - Don't allow users to upload SVG files
+  - Don't render untrusted SVG/MathML content
+  - Current app doesn't use SVG user content
+
+**Co-Authors Feature Impact:**
+- The co-authors feature does NOT use SVG, MathML, or protocol-relative URLs
+- Feature does not increase attack surface for these vulnerabilities
+- Feature only handles plain text (email addresses and article content)
+
+### ✅ Non-Angular Vulnerabilities (FIXED)
+
+#### 1. axios (1.6.7 → 1.12.0) ✅
 **Vulnerabilities:**
-- DoS attack through lack of data size check (CVE pending)
-  - Affected: >= 1.0.0, < 1.12.0
-  - Fix: Upgrade to >= 1.12.0
-  
-- SSRF and Credential Leakage via Absolute URL
-  - Affected: >= 1.0.0, < 1.8.2
-  - Fix: Upgrade to >= 1.8.2
-  
+- DoS attack through lack of data size check
+- SSRF and Credential Leakage via Absolute URL  
 - Server-Side Request Forgery
-  - Affected: >= 1.3.2, <= 1.7.3
-  - Fix: Upgrade to >= 1.7.4
 
-**Recommendation**: Upgrade to **axios@1.12.0** or later
+**Status**: FIXED - Upgraded to 1.12.0
 
-**Usage in Project**: 
-- Used in submit.ts for submission API
-- Not used in co-authors feature code
-
-#### 2. crypto-js (4.1.1)
+#### 2. crypto-js (4.1.1 → 4.2.0) ✅
 **Vulnerability:**
 - PBKDF2 1,000 times weaker than specified standard
-  - Affected: < 4.2.0
-  - Fix: Upgrade to >= 4.2.0
 
-**Recommendation**: Upgrade to **crypto-js@4.2.0**
+**Status**: FIXED - Upgraded to 4.2.0
 
-**Usage in Project**:
-- Used in User entity for password hashing
-- Not modified in co-authors feature
-
-#### 3. form-data (4.0.0)
+#### 3. form-data (4.0.0 → 4.0.4) ✅
 **Vulnerability:**
 - Unsafe random function for choosing boundary
-  - Affected: >= 4.0.0, < 4.0.4
-  - Fix: Upgrade to >= 4.0.4
 
-**Recommendation**: Upgrade to **form-data@4.0.4**
-
-**Usage in Project**:
-- Used in submit.ts for form submission
-- Not used in co-authors feature code
+**Status**: FIXED - Upgraded to 4.0.4
 
 ## Impact on Co-Authors Feature
 
@@ -126,23 +142,43 @@ I have reviewed all code changes in the co-authors feature for security issues:
 
 The co-authors feature implementation:
 - Follows secure coding practices
-- Uses parameterized queries
+- Uses parameterized queries (SQL injection protected)
 - Implements proper authorization checks
 - Leverages Angular's built-in security features
 - Does not introduce any new vulnerabilities
+- Does not use SVG, MathML, or protocol-relative URLs
 
-### Pre-Existing Vulnerabilities: **3 packages** ⚠️
+### Vulnerabilities Fixed: **3 packages** ✅
 
-The following pre-existing vulnerabilities should be addressed by upgrading dependencies:
+Successfully upgraded:
 1. axios: 1.6.7 → 1.12.0
 2. crypto-js: 4.1.1 → 4.2.0
 3. form-data: 4.0.0 → 4.0.4
 
-**Note**: These are NOT related to the co-authors feature and were present in the base repository.
+### Pre-Existing Angular Vulnerabilities: **Cannot Fix** ⚠️
+
+**Reason**: Fixing would require:
+- Major version upgrade (Angular 16 → 19+)
+- Extensive refactoring of entire application
+- Out of scope for minimal-change PR
+- Not related to co-authors feature
+
+**Recommendation for Repository Owner**:
+- Plan Angular upgrade to 19.x LTS or later
+- Angular 16 is EOL and receives no security patches
+- Avoid using SVG/MathML user content until upgraded
+- Validate all URLs to prevent protocol-relative URL exploits
+
+**Immediate Mitigations** (Already in place):
+- Application doesn't allow SVG/MathML user uploads
+- Co-authors feature only handles plain text
+- No protocol-relative URLs in co-authors code
+- Attack surface not increased by this feature
 
 ---
 
 **Security Assessment Date**: January 20, 2026
 **Assessment Scope**: Co-Authors Feature Implementation
-**Overall Security Status**: ✅ SECURE (feature code)
-**Pre-existing Issues**: ⚠️ 3 dependency upgrades recommended
+**Co-Authors Feature Security**: ✅ SECURE
+**Fixable Dependencies**: ✅ ALL FIXED
+**Angular Framework**: ⚠️ EOL version with known vulnerabilities (requires major upgrade)
