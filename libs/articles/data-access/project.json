@@ -1,0 +1,16 @@
+{
+  "name": "articles-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/articles/data-access/src",
+  "prefix": "cdt",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/articles/data-access/src/**/*.ts", "libs/articles/data-access/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Conduit Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "settings": {
+    "chat.disableAIFeatures": true
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "cweijan.vscode-mysql-client2",
+        "saoudrizwan.claude-dev@3.34.0"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 4200, 3306],
+  "portsAttributes": {
+    "3000": {
+      "label": "Backend",
+      "onAutoForward": "silent",
+      "protocol": "http"
+    },
+    "4200": {
+      "label": "Frontend",
+      "onAutoForward": "openBrowserOnce",
+      "protocol": "http"
+    },
+    "3306": {
+      "label": "Database",
+      "onAutoForward": "ignore"
+    }
+  }
+}

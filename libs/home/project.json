@@ -1,0 +1,8 @@
+{
+  "name": "home",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/home/src",
+  "projectType": "library",
+  "targets": {},
+  "prefix": "app"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "settings-feature-settings",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/settings/feature-settings/src",
+  "prefix": "cdt",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/settings/feature-settings/src/**/*.ts",
+          "libs/settings/feature-settings/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
